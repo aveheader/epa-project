@@ -12,7 +12,7 @@ class OrderPersister implements OrderPersisterInterface
     {
         file_put_contents(
             $this->filePath,
-            json_encode($orderData),
+            json_encode($orderData, JSON_UNESCAPED_UNICODE) . PHP_EOL,
             FILE_APPEND | LOCK_EX
         );
     }

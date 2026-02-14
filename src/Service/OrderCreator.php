@@ -5,8 +5,8 @@ namespace App\Service;
 use App\Entity\User;
 use App\Enum\ServiceType;
 use DateTimeImmutable;
-use http\Env\Request;
-use Symfony\Component\Validator\Constraints\Uuid;
+use Symfony\Component\Uid\Uuid;
+
 
 class OrderCreator
 {
@@ -18,12 +18,12 @@ class OrderCreator
     public function create(ServiceType $service, string $email, User $user): void
     {
         $order = [
-            'id' => Uuid::V7_MONOTONIC,
+            'id' => Uuid::v7()->toString(),
             'services' => $service->value,
             'price' => $service->price(),
             'email' => $email,
             'user_id' => $user->getId(),
-            'created_at' => new DateTimeImmutable(),
+            'created_at' => new DateTimeImmutable()->format('Y-m-d H:i:s'),
         ];
 
         $this->orderPersister->save($order);

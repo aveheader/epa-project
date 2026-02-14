@@ -21,13 +21,13 @@ class OrderFormType extends AbstractType
                 'choice_label' => fn(?ServiceType $type) => $type?->label() ?? '',
                 'choice_value' => fn(?ServiceType $type) => $type?->value ?? '',
                 'constraints' => [
-                    new NotBlank(),
+                    new NotBlank(message: 'Поле выбора сервиса не может быть пустым'),
                 ],
             ])
             ->add('email', EmailType::class, [
                 'constraints' => [
-                    new NotBlank(),
-                    new Email(),
+                    new NotBlank(message: 'Поле email не может быть пустым'),
+                    new Email(message: 'Введите корректный адрес email'),
                 ],
             ])
         ;

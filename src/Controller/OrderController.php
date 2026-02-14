@@ -35,6 +35,8 @@ final class OrderController extends AbstractController
             $email = $data['email'];
 
             $this->orderCreator->create($service, $email, $user);
+
+            return $this->redirectToRoute('app_order');
         }
 
         $prices = [];
