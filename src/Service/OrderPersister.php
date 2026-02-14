@@ -5,7 +5,7 @@ namespace App\Service;
 class OrderPersister implements OrderPersisterInterface
 {
     public function __construct(
-        private string $filePath,
+        private readonly string $filePath,
     ) {
     }
     public function save(array $orderData): void
