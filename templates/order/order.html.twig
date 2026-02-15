@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Создание заказа{% endblock %}
+
+{% block body %}
+    <h1>Создание заказа</h1>
+
+    {% if success %}
+        <p>Заказ успешно сформирован.</p>
+    {% endif %}
+
+    {{ form_start(form) }}
+
+    <p>
+        {{ form_label(form.serviceId) }}<br>
+        {{ form_widget(form.serviceId) }}<br>
+        {{ form_errors(form.serviceId) }}
+    </p>
+
+    <p>
+        {{ form_label(form.email) }}<br>
+        {{ form_widget(form.email) }}<br>
+        {{ form_errors(form.email) }}
+    </p>
+
+    <p>
+        Стоимость: <strong><span id="price">0</span> ₽</strong>
+    </p>
+
+    <button type="submit">Подтвердить</button>
+
+    {{ form_end(form) }}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const select = document.querySelector('#{{ form.serviceId.vars.id }}');
+            const priceElement = document.getElementById('price');
+            const prices = {{ prices|json_encode|raw }};
+
+            function updatePrice() {
+                priceElement.textContent = prices[select.value] ?? 0;
+            }
+
+            select.addEventListener('change', updatePrice);
+            updatePrice();
+        });
+    </script>
+{% endblock %}

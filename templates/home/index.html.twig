@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Главная{% endblock %}
+
+{% block body %}
+    <h1>EPA Project</h1>
+
+    <ul>
+        {% if app.user %}
+            <li><a href="{{ path('app_logout') }}">Выход</a></li>
+        {% else %}
+            <li><a href="{{ path('app_login') }}">Вход</a></li>
+        {% endif %}
+        <li><a href="{{ path('app_order') }}">Сделать заказ</a></li>
+    </ul>
+{% endblock %}

@@ -2,34 +2,43 @@
 
 namespace App\Form;
 
-use App\Enum\ServiceType;
+use App\DTO\OrderRequestDTO;
+use App\Service\ServiceTypeProvider;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints\Email;
-use Symfony\Component\Validator\Constraints\NotBlank;
-class OrderFormType extends AbstractType
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+final class OrderFormType extends AbstractType
 {
+    public function __construct(
+        private readonly ServiceTypeProvider $provider,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $choices = [];
+        foreach ($this->provider->getAll() as $service) {
+            $choices[$service->label] = $service->id;
+        }
+
         $builder
-            ->add('service', ChoiceType::class, [
+            ->add('serviceId', ChoiceType::class, [
                 'label' => 'Сервис',
-                'choices' => ServiceType::cases(),
+                'choices' => $choices,
                 'placeholder' => 'Выберите сервис',
-                'choice_label' => fn(?ServiceType $type) => $type?->label() ?? '',
-                'choice_value' => fn(?ServiceType $type) => $type?->value ?? '',
-                'constraints' => [
-                    new NotBlank(message: 'Поле выбора сервиса не может быть пустым'),
-                ],
             ])
             ->add('email', EmailType::class, [
-                'constraints' => [
-                    new NotBlank(message: 'Поле email не может быть пустым'),
-                    new Email(message: 'Введите корректный адрес email'),
-                ],
-            ])
-        ;
+                'label' => 'Email',
+            ]);
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => OrderRequestDTO::class,
+        ]);
     }
 }
