@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Доступ запрещён{% endblock %}
+
+{% block body %}
+    <h1>Доступ запрещён</h1>
+
+    <p>Страница создания заказа доступна только авторизованным пользователям.</p>
+
+    <p><a href="{{ path('app_login') }}">Войти</a></p>
+{% endblock %}

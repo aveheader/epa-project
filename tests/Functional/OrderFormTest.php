@@ -2,36 +2,28 @@
 
 namespace Functional;
 
-use Doctrine\ORM\EntityManagerInterface;
-use App\Tests\Factory\UserFactory;
+use App\Tests\Helpers\UserHelper;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class OrderFormTest extends WebTestCase
 {
     public function testUserCanSeeOrderForm(): void
     {
         $client = static::createClient();
-        $container = static::getContainer();
-
-        $userFactory = new UserFactory(
-            $container->get(EntityManagerInterface::class),
-            $container->get(UserPasswordHasherInterface::class)
-        );
-
-        $user = $userFactory->create();
-
+        $user = UserHelper::ensureUser($this->getContainer());
         $client->loginUser($user);
 
         $client->request('GET', '/order');
 
         $this->assertResponseIsSuccessful();
-        $this->assertPageTitleSame('Создать заказ');
+        $this->assertPageTitleSame('Создание заказа');
 
-        $this->assertSelectorExists('select[name="order_form[service]"]');
+        $this->assertSelectorExists('select[name="order_form[serviceId]"]');
         $this->assertSelectorExists('input[name="order_form[email]"]');
 
-        $this->assertSelectorExists('button');
-        $this->assertSelectorTextContains('button', 'Отправить');
+        $this->assertSelectorExists('button[type="submit"]');
+        $this->assertSelectorTextContains('button[type="submit"]', 'Подтвердить');
+
+        $this->assertSelectorExists('#price');
     }
 }

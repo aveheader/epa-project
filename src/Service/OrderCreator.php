@@ -1,31 +1,40 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
+use App\DTO\OrderRequestDTO;
+use App\Entity\Order;
 use App\Entity\User;
-use App\Enum\ServiceType;
-use DateTimeImmutable;
-use Symfony\Component\Uid\Uuid;
+use Doctrine\ORM\EntityManagerInterface;
+use InvalidArgumentException;
 
-
-class OrderCreator
+final readonly class OrderCreator
 {
     public function __construct(
-        private readonly OrderPersisterInterface $orderPersister,
+        private EntityManagerInterface $entityManager,
+        private ServiceTypeProvider    $serviceTypeProvider,
     ) {
     }
 
-    public function create(ServiceType $service, string $email, User $user): void
+    public function create(User $user, OrderRequestDTO $dto): Order
     {
-        $order = [
-            'id' => Uuid::v7()->toString(),
-            'services' => $service->value,
-            'price' => $service->price(),
-            'email' => $email,
-            'user_id' => $user->getId(),
-            'created_at' => new DateTimeImmutable()->format('Y-m-d H:i:s'),
-        ];
+        $service = $this->serviceTypeProvider->getById($dto->serviceId ?? '');
 
-        $this->orderPersister->save($order);
+        if (!$service) {
+            throw new InvalidArgumentException('Такого сервиса не существует');
+        }
+
+        $order = new Order()
+            ->setServiceId($service->id)
+            ->setEmail($dto->email ?? '')
+            ->setPrice($service->price)
+            ->setUser($user);
+
+        $this->entityManager->persist($order);
+        $this->entityManager->flush();
+
+        return $order;
     }
 }

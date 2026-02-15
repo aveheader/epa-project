@@ -6,6 +6,9 @@ PHP      = $(PHP_CONT) php
 COMPOSER = $(PHP_CONT) composer
 SYMFONY  = $(PHP) bin/console
 PHPUNIT  = $(PHP) bin/phpunit
+DB_CONT = $(DOCKER_COMP) exec database
+MYSQL_ROOT = $(DB_CONT) mysql -uroot -proot
+
 
 build:
 	@$(DOCKER_COMP) build --pull --no-cache
@@ -29,5 +32,7 @@ cc:
 load:
 	@$(SYMFONY) doctrine:fixtures:load
 configure-test:
-	@$(SYMFONY) doctrine:database:create --if-not-exists --env=test
+	@$(MYSQL_ROOT) -e "CREATE DATABASE IF NOT EXISTS app_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+	@$(MYSQL_ROOT) -e "GRANT ALL PRIVILEGES ON \`app_test\`.* TO 'app'@'%';"
+	@$(MYSQL_ROOT) -e "FLUSH PRIVILEGES;"
 	@$(SYMFONY) doctrine:migrations:migrate --no-interaction --env=test
