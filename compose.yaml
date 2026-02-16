@@ -46,12 +46,12 @@ services:
         MYSQL_ROOT_PASSWORD: root
         MYSQL_PASSWORD: ${MYSQL_PASSWORD:-!ChangeMe!}
         MYSQL_USER: ${MYSQL_USER:-app}
-
     healthcheck:
-        test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
-        timeout: 5s
-        retries: 5
-        start_period: 60s
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 120s
     volumes:
         - database_data:/var/lib/mysql:rw
         # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!

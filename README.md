@@ -19,8 +19,10 @@ Order Service — это простое веб-приложение на Symfony
 После запуска приложение доступно по адресу:
 
 ```
-http://localhost
+https://localhost
 ```
+При первом открытии браузер может показать предупреждение о self-signed сертификате — это нормально для dev-окружения.
+
 
 ---
 
@@ -51,7 +53,7 @@ make up
 или
 
 ```bash
-docker compose up --detach --wait
+docker compose up -d
 ```
 
 ---
@@ -95,12 +97,6 @@ make test
 
 ```bash
 php bin/phpunit
-```
-
-Загрузить фикстуры:
-
-```bash
-make load
 ```
 
 Если возникают проблемы с правами доступа:

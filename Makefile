@@ -13,9 +13,11 @@ MYSQL_ROOT = $(DB_CONT) mysql -uroot -proot
 build:
 	@$(DOCKER_COMP) build --pull --no-cache
 up:
-	@$(DOCKER_COMP) up --detach --wait
+	@$(DOCKER_COMP) up -d
 down:
 	@$(DOCKER_COMP) down --remove-orphans
+status:
+	@$(DOCKER_COMP) ps
 bash:
 	@$(PHP_CONT) bash
 chown:
